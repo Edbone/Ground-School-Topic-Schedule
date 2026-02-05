@@ -107,73 +107,73 @@ const SCHEDULE = {
   Private: {
     days: [0,1,2,3,4,5,6],
     topics: [
-      "Private Seminar 1 Student Pilot Documents",
-      "Private Seminar 2 Aircraft Documents-Inspections",
-      "Private Seminar 3 Preflight Aircraft Inspection",
-      "Private Seminar 4 Checklist Usage Sterile Cockpit",
-      "Private Seminar 5 Passenger Safety Briefing",
-      "Private Seminar 6 Primary Flight Controls",
-      "Private Seminar 7 Secondary Flight Controls",
-      "Private Seminar 8 Powerplant Engines",
-      "Private Seminar 9 Ignition Magneto",
-      "Private Seminar 10 Fuel System",
-      "Private Seminar 11 Electrical System",
-      "Private Seminar 12 Landing Gear Brakes Pressurization Oxygen",
-      "Private Seminar 13 Runway Incursions",
-      "Private Seminar 14 Radio Communications - Cockpit Management",
-      "Private Seminar 15 Lift Turns",
-      "Private Seminar 16 Drag Ground Effect",
-      "Private Seminar 17 Wake Turbulence",
-      "Private Seminar 18 Stalls and Spins",
-      "Private Seminar 19 Weight and Balance",
-      "Private Seminar 20 Thrust Propeller",
-      "Private Seminar 21 Density Altitude",
-      "Private Seminar 22 Airplane Performance",
-      "Private Seminar 23 Pitot-Static Flight Instruments",
-      "Private Seminar 24 Gyroscopic Flight Instruments",
-      "Private Seminar 26 Taxi Procedures",
-      "Private Seminar 28 Airspace Classifications",
-      "Private Seminar 29 Collision Avoidance",
-      "Private Seminar 29 Forced Landing",
-      "Private Seminar 29 Night Operations",
-      "Private Seminar 30 Inoperative Equipment",
-      "Private Seminar 33 Maneuvering Speed"
+      "Student Pilot Documents",
+      "Aircraft Documents-Inspections",
+      "Preflight Aircraft Inspection",
+      "Checklist Usage Sterile Cockpit",
+      "Passenger Safety Briefing",
+      "Primary Flight Controls",
+      "Secondary Flight Controls",
+      "Powerplant Engines",
+      "Ignition Magneto",
+      "Fuel System",
+      "Electrical System",
+      "Landing Gear Brakes Pressurization Oxygen",
+      "Runway Incursions",
+      "Radio Communications - Cockpit Management",
+      "Lift Turns",
+      "Drag Ground Effect",
+      "Wake Turbulence",
+      "Stalls and Spins",
+      "Weight and Balance",
+      "Thrust Propeller",
+      "Density Altitude",
+      "Airplane Performance",
+      "Pitot-Static Flight Instruments",
+      "Gyroscopic Flight Instruments",
+      "Taxi Procedures",
+      "Airspace Classifications",
+      "Collision Avoidance",
+      "Forced Landing",
+      "Night Operations",
+      "Inoperative Equipment",
+      "Maneuvering Speed"
     ]
   },
 
   Instrument: {
     days: [2,3,4,5], // Tue–Fri
     topics: [
-      "Instrument 1 Spatial Disorientation",
-      "Instrument 2 Attitude Instrument Flying EFD",
-      "Instrument 3 Partial Panel",
-      "Instrument 4 Preparing for the Approach",
-      "Instrument 5 Alternate Airport",
-      "Instrument 6 VOR How It Works",
-      "Instrument 6 VOR Tracking",
-      "Instrument 7 GPS How It Works",
-      "Instrument 8 GPS Approaches",
-      "Instrument 9 Holding Patterns",
-      "Instrument 10 ILS Approach",
-      "Instrument 11 Circle to Land"
+      "Spatial Disorientation",
+      "Attitude Instrument Flying EFD",
+      "Flying Partial Panel",
+      "Preparing for the Approach",
+      "Alternate Airports",
+      "VORs How It Works",
+      "VOR Tracking",
+      "GPS How It Works",
+      "GPS Approaches",
+      "Holding Patterns",
+      "ILS Approaches",
+      "Circling to Land"
     ]
   },
 
   Commercial: {
     days: [2,4,6], // Tue/Thu/Sat
     topics: [
-      "Privileges and limitations, Commercial Regulations",
-      "MELs, getting an MEL, Ferry Permits",
+      "Privileges and Limitations, Commercial Regulations",
+      "MELs, Getting an MEL, Ferry Permits",
       "High Altitude Systems",
-      "Constant speed props and propeller principals, Turbines",
-      "Control surfaces and their varieties",
-      "L/D coefficient, range and endurance",
-      "Stalls and spins, T-tails and deep stalls (phak 6-6)",
+      "Constant Speed Props and Propeller Principals, Turbines",
+      "Control Surfaces and Their Varieties",
+      "L/D Coefficient, Range and Endurance",
+      "Stalls and Spins, T-tails and Deep Stalls",
       "Effects of Wing Planform and Wing Design",
-      "Critical mach number, mach tuck, transonic aerodynamics",
-      "CG, Stability, weight shift formula",
-      "Traversing Complex Airspace (Guided discussion/ workshop)",
-      "Risk management and ADM in commercial operations"
+      "Critical Mach Number, Mach Tuck, Transonic Aerodynamics",
+      "CG, Stability, Weight Shift Formula",
+      "Traversing Complex Airspace",
+      "Risk Management and ADM In Commercial Operations"
     ]
   }
 };
@@ -424,9 +424,9 @@ function render(){
   document.getElementById("todayLine").textContent = `${weekdays[today.getDay()]} • ${toYMD(today)}`;
 
   const anchors = loadAnchors();
-  renderCard("card-private", "Private", SCHEDULE.Private, today, anchors.Private);
-  renderCard("card-instrument", "Instrument", SCHEDULE.Instrument, today, anchors.Instrument);
-  renderCard("card-commercial", "Commercial", SCHEDULE.Commercial, today, anchors.Commercial);
+  renderCard("card-private", "Private 2-4 PM", SCHEDULE.Private, today, anchors.Private);
+  renderCard("card-instrument", "Instrument 12-2 PM", SCHEDULE.Instrument, today, anchors.Instrument);
+  renderCard("card-commercial", "Commercial 4-6 PM", SCHEDULE.Commercial, today, anchors.Commercial);
 }
 
 render();
