@@ -73,14 +73,18 @@
     </div>
 
 <header class="mb-4">
-  <div class="glass-card rounded-2xl p-4 sm:p-6 text-center">
-    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-      <span class="text-sim-yellow">Ground School</span>
-      <span class="text-sim-yellow"> Topics</span>
-    </h1>
-    <div id="todayLine" class="text-sm sm:text-base mono mt-2" style="color: rgba(255,255,255,.70);">—</div>
-    <div class="text-xs sm:text-sm mt-2" style="color: rgba(255,255,255,.60);">
-      Showing: Today + next 4 sessions
+  <div class="glass-card rounded-2xl p-4 sm:p-6 relative">
+    <div id="todayLine"
+         class="text-sm sm:text-base mono absolute top-4 left-4 sm:top-6 sm:left-6"
+         style="color: rgba(255,255,255,.70);">
+      —
+    </div>
+
+    <div class="text-center">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+        <span class="text-sim-yellow">Ground School</span>
+        <span class="text-sim-yellow"> Topics</span>
+      </h1>
     </div>
   </div>
 </header>
@@ -184,8 +188,8 @@ const SCHEDULE = {
       6: "PVT"
     },
     topics: {
-      PVT: ["PVT Written Test Prep"],
-      IRA: ["IRA Written Test Prep"]
+      PVT: ["PVT Knowledge Test Prep"],
+      IRA: ["IRA Knowledge Test Prep"]
     }
   }
 };
@@ -324,8 +328,7 @@ function renderCard(elId, title, rating, today, startDateYMD) {
 
   el.innerHTML = `
     <div class="flex items-center justify-between gap-2">
-      <h2 class="text-xl font-extrabold text-sim-yellow">${escapeHtml(title)}</h2>
-      ${pillForToday(rating, today)}
+<h2 class="text-xl font-extrabold text-gray-100">${escapeHtml(title)}</h2>
     </div>
 
     <div class="mt-1">
