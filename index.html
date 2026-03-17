@@ -28,24 +28,23 @@
     .card { transition: all 0.3s ease; }
     .card:hover { transform: translateY(-2px); }
 
-    .pill { border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); color: rgba(255,255,255,.75); }
-    .pill-ok { border: 1px solid var(--okBorder); background: var(--ok); color: rgba(255,255,255,.9); }
+    .pill {
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.75);
+    }
+
+    .pill-ok {
+      border: 1px solid var(--okBorder);
+      background: var(--ok);
+      color: rgba(255,255,255,.9);
+    }
 
     .mono { font-variant-numeric: tabular-nums; }
 
     ::-webkit-scrollbar { height: 10px; width: 10px; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }
     ::-webkit-scrollbar-track { background: rgba(255,255,255,.04); }
-
-    /* subtle grey "blends in" button */
-    .btn-ghost {
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      color: rgba(255,255,255,.70);
-    }
-    .btn-ghost:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.85); }
-
-    dialog::backdrop { background: rgba(0,0,0,.55); }
   </style>
 
   <script>
@@ -62,16 +61,18 @@
 
 <body class="font-sans min-h-screen bg-gray-950 text-gray-100">
   <div class="relative overflow-hidden bg-gray-950 text-gray-100 p-4 sm:p-8 min-h-screen">
-    <!-- Background glow -->
     <div class="pointer-events-none absolute inset-0">
-      <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] rounded-full blur-3xl opacity-20"
-           style="background: radial-gradient(circle, rgba(250,204,21,0.30), rgba(30,64,175,0.16), transparent 70%);"></div>
-      <div class="absolute -bottom-56 right-[-120px] w-[900px] h-[900px] rounded-full blur-3xl opacity-15"
-           style="background: radial-gradient(circle, rgba(30,64,175,0.22), transparent 65%);"></div>
+      <div
+        class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] rounded-full blur-3xl opacity-20"
+        style="background: radial-gradient(circle, rgba(250,204,21,0.30), rgba(30,64,175,0.16), transparent 70%);">
+      </div>
+      <div
+        class="absolute -bottom-56 right-[-120px] w-[900px] h-[900px] rounded-full blur-3xl opacity-15"
+        style="background: radial-gradient(circle, rgba(30,64,175,0.22), transparent 65%);">
+      </div>
     </div>
 
-    <div class="container mx-auto max-w-6xl relative">
-      <!-- Slim header -->
+    <div class="container mx-auto max-w-7xl relative">
       <header class="mb-4">
         <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
@@ -88,11 +89,11 @@
         </div>
       </header>
 
-      <!-- One-screen layout -->
-      <main class="grid gap-4 lg:grid-cols-3">
+      <main class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <section id="card-private" class="card glass-card p-5 rounded-2xl"></section>
         <section id="card-instrument" class="card glass-card p-5 rounded-2xl"></section>
         <section id="card-commercial" class="card glass-card p-5 rounded-2xl"></section>
+        <section id="card-written" class="card glass-card p-5 rounded-2xl"></section>
       </main>
     </div>
   </div>
@@ -142,7 +143,7 @@ const SCHEDULE = {
   },
 
   Instrument: {
-    days: [2,3,4,5], // Tue–Fri
+    days: [2,3,4,5], // Tue-Fri
     topics: [
       "Spatial Disorientation",
       "Attitude Instrument Flying EFD",
@@ -175,197 +176,146 @@ const SCHEDULE = {
       "Traversing Complex Airspace",
       "Risk Management and ADM In Commercial Operations"
     ]
+  },
+
+  Written: {
+    days: [2,3,4,5,6], // Tue/Wed/Thu/Fri/Sat
+    trackByDay: {
+      2: "PVT",
+      3: "IRA",
+      4: "PVT",
+      5: "IRA",
+      6: "PVT"
+    },
+    topics: {
+      PVT: ["PVT Written Test Prep"],
+      IRA: ["IRA Written Test Prep"]
+    }
   }
 };
 
 /* =========================================
-   ANCHORS (per rating)
-   - Stored in localStorage so it persists
-   - Defaults set based on what you told me
+   TOPIC 1 START DATES
+   These make 3/17/2026 line up as:
+   Private = Runway Incursions
+   Instrument = Holding Patterns
+   Commercial = High Altitude Systems
    ========================================= */
 
-const STORAGE_KEY = "gs_anchors_v1";
-
-const DEFAULT_ANCHORS = {
-  Private: "2026-02-02",
-  Instrument: "2026-01-20", // makes 2/4/26 show Instrument 10 ILS Approach
-  Commercial: "2026-02-02"  // change when you know
+const START_DATES = {
+  Private: "2026-03-05",
+  Instrument: "2026-02-27",
+  Commercial: "2026-03-12",
+  Written: "2026-03-17"
 };
-
-function loadAnchors() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_ANCHORS };
-    const parsed = JSON.parse(raw);
-    return {
-      Private: typeof parsed.Private === "string" ? parsed.Private : DEFAULT_ANCHORS.Private,
-      Instrument: typeof parsed.Instrument === "string" ? parsed.Instrument : DEFAULT_ANCHORS.Instrument,
-      Commercial: typeof parsed.Commercial === "string" ? parsed.Commercial : DEFAULT_ANCHORS.Commercial
-    };
-  } catch {
-    return { ...DEFAULT_ANCHORS };
-  }
-}
-
-function saveAnchors(obj) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
-}
 
 /* =========================================
    ENGINE
    ========================================= */
 
 const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const pad2 = (n) => String(n).padStart(2,"0");
+const pad2 = (n) => String(n).padStart(2, "0");
 
-function toYMD(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
-function parseYMD(ymd){
-  const [y,m,d] = ymd.split("-").map(Number);
-  return new Date(y, m-1, d, 0,0,0,0);
+function toYMD(d) {
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 }
-function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
-function isMeetingDay(days, dateObj){ return days.includes(dateObj.getDay()); }
 
-function countMeetingsInclusive(anchor, target, days){
+function parseYMD(ymd) {
+  const [y, m, d] = ymd.split("-").map(Number);
+  return new Date(y, m - 1, d, 0, 0, 0, 0);
+}
+
+function addDays(d, n) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + n);
+  return x;
+}
+
+function isMeetingDay(days, dateObj) {
+  return days.includes(dateObj.getDay());
+}
+
+function countMeetingsInclusive(anchor, target, days) {
   if (target < anchor) return 0;
-  let c = 0;
+
+  let count = 0;
   let d = new Date(anchor);
-  while (d <= target){
-    if (isMeetingDay(days, d)) c++;
+
+  while (d <= target) {
+    if (isMeetingDay(days, d)) count++;
     d = addDays(d, 1);
   }
-  return c;
+
+  return count;
 }
 
-function topicForDate(anchor, dateObj, rating){
+function topicForDate(startDate, dateObj, rating) {
   if (!isMeetingDay(rating.days, dateObj)) return null;
-  const n = countMeetingsInclusive(anchor, dateObj, rating.days);
+
+  if (rating.trackByDay && rating.topics && !Array.isArray(rating.topics)) {
+    const day = dateObj.getDay();
+    const track = rating.trackByDay[day];
+    const list = rating.topics[track] || [];
+    if (!list.length) return null;
+
+    const n = countMeetingsInclusive(startDate, dateObj, rating.days);
+    if (n <= 0) return null;
+
+    return list[(n - 1) % list.length];
+  }
+
+  const n = countMeetingsInclusive(startDate, dateObj, rating.days);
   const list = rating.topics || [];
+
   if (!list.length || n <= 0) return null;
   return list[(n - 1) % list.length];
 }
 
-function nextMeetings(fromDate, rating, howMany=4){
+function nextMeetings(fromDate, rating, howMany = 4) {
   const out = [];
   let d = new Date(fromDate);
-  // search forward up to 6 weeks to guarantee we find 4 sessions
-  for (let i=0; i<42 && out.length < howMany; i++){
+
+  for (let i = 0; i < 42 && out.length < howMany; i++) {
     if (isMeetingDay(rating.days, d)) out.push(new Date(d));
     d = addDays(d, 1);
   }
+
   return out;
 }
 
-function meetsLabel(days){
-  return days.map(d => weekdays[d].slice(0,3)).join(", ");
+function meetsLabel(days) {
+  return days.map(d => weekdays[d].slice(0, 3)).join(", ");
 }
 
-function escapeHtml(str){
+function escapeHtml(str) {
   return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-/* =========================================
-   ANCHOR PICKER (per card)
-   ========================================= */
-
-function computeAnchorFromLesson(ratingName, lessonIndex, taughtDateYMD) {
-  const rating = SCHEDULE[ratingName];
-  const taughtDate = parseYMD(taughtDateYMD);
-
-  // We want: on taughtDate, topic == topics[lessonIndex]
-  // => meetingsCountInclusive(anchor, taughtDate) = lessonIndex + 1
-  const requiredMeetings = lessonIndex + 1;
-
-  let d = new Date(taughtDate);
-  let count = 0;
-
-  while (true) {
-    if (isMeetingDay(rating.days, d)) count++;
-    if (count === requiredMeetings) return toYMD(d);
-    d = addDays(d, -1);
-    if (count > 500) return toYMD(taughtDate); // safety
-  }
-}
-
-function openAnchorDialog(ratingName) {
-  const dialog = document.getElementById("anchorDialog");
-  dialog.dataset.rating = ratingName;
-
-  document.getElementById("anchorTitle").textContent = `Set Anchor • ${ratingName}`;
-
-  const select = document.getElementById("anchorLesson");
-  select.innerHTML = "";
-  SCHEDULE[ratingName].topics.forEach((t, idx) => {
-    const opt = document.createElement("option");
-    opt.value = String(idx);
-    opt.textContent = t;
-    select.appendChild(opt);
-  });
-
-  document.getElementById("anchorTaughtDate").value = toYMD(new Date());
-  setDialogMsg("");
-  dialog.showModal();
-}
-
-function closeAnchorDialog() {
-  document.getElementById("anchorDialog").close();
-}
-
-function setDialogMsg(text, kind="info") {
-  const el = document.getElementById("anchorMsg");
-  if (!text) { el.textContent = ""; el.className = "mt-2 text-xs"; return; }
-  if (kind === "error") el.className = "mt-2 text-xs text-red-300";
-  else if (kind === "ok") el.className = "mt-2 text-xs text-green-300";
-  else el.className = "mt-2 text-xs";
-  el.textContent = text;
-}
-
-function applyAnchorFromDialog() {
-  const dialog = document.getElementById("anchorDialog");
-  const ratingName = dialog.dataset.rating;
-
-  const lessonIndex = Number(document.getElementById("anchorLesson").value);
-  const taughtDate = document.getElementById("anchorTaughtDate").value;
-
-  if (!ratingName || !SCHEDULE[ratingName]) return setDialogMsg("Invalid rating.", "error");
-  if (!Number.isFinite(lessonIndex)) return setDialogMsg("Pick a lesson.", "error");
-  if (!taughtDate) return setDialogMsg("Pick the date it was taught.", "error");
-
-  const newAnchor = computeAnchorFromLesson(ratingName, lessonIndex, taughtDate);
-
-  const anchors = loadAnchors();
-  anchors[ratingName] = newAnchor;
-  saveAnchors(anchors);
-
-  setDialogMsg(`Saved. Topic 1 date is now ${newAnchor}.`, "ok");
-  render();
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 /* =========================================
    UI
    ========================================= */
 
-function pillForToday(rating, today){
+function pillForToday(rating, today) {
   if (isMeetingDay(rating.days, today)) {
     return `<span class="pill pill-ok text-xs px-3 py-1 rounded-full">Meets today</span>`;
   }
   return `<span class="pill text-xs px-3 py-1 rounded-full">No class today</span>`;
 }
 
-function renderCard(elId, title, rating, today, anchorYMD){
+function renderCard(elId, title, rating, today, startDateYMD) {
   const el = document.getElementById(elId);
-  const anchor = parseYMD(anchorYMD);
+  const startDate = parseYMD(startDateYMD);
 
-  const todayTopic = topicForDate(anchor, today, rating);
+  const todayTopic = topicForDate(startDate, today, rating);
 
   const upcomingDates = nextMeetings(addDays(today, 1), rating, 4);
   const upcomingLines = upcomingDates.map(d => {
-    const t = topicForDate(anchor, d, rating);
+    const t = topicForDate(startDate, d, rating);
     return `
       <div class="mt-2">
         <div class="text-xs mono" style="color: rgba(255,255,255,.65);">
@@ -382,24 +332,14 @@ function renderCard(elId, title, rating, today, anchorYMD){
       ${pillForToday(rating, today)}
     </div>
 
-    <!-- stacked so the button stays same size on all cards -->
-    <div class="mt-1 space-y-2">
+    <div class="mt-1">
       <div class="text-xs uppercase tracking-wider" style="color: rgba(255,255,255,.70);">
         Meets: ${escapeHtml(meetsLabel(rating.days))}
-      </div>
-
-      <div class="flex justify-end">
-        <button
-          class="btn-ghost text-xs px-3 py-1.5 rounded-lg font-semibold w-[96px] text-center"
-          type="button"
-          onclick="openAnchorDialog('${escapeHtml(title)}')">
-          Set anchor
-        </button>
       </div>
     </div>
 
     <div class="mt-1 text-xs mono" style="color: rgba(255,255,255,.55);">
-      Topic 1 date: ${escapeHtml(anchorYMD)}
+      Topic 1 date: ${escapeHtml(startDateYMD)}
     </div>
 
     <div class="mt-4">
@@ -419,65 +359,18 @@ function renderCard(elId, title, rating, today, anchorYMD){
   `;
 }
 
-function render(){
+function render() {
   const today = new Date();
   document.getElementById("todayLine").textContent = `${weekdays[today.getDay()]} • ${toYMD(today)}`;
 
-  const anchors = loadAnchors();
-  renderCard("card-private", "Private 2-4 PM", SCHEDULE.Private, today, anchors.Private);
-  renderCard("card-instrument", "Instrument 12-2 PM", SCHEDULE.Instrument, today, anchors.Instrument);
-  renderCard("card-commercial", "Commercial 4-6 PM", SCHEDULE.Commercial, today, anchors.Commercial);
+  renderCard("card-private", "Private 2-4 PM", SCHEDULE.Private, today, START_DATES.Private);
+  renderCard("card-instrument", "Instrument 12-2 PM", SCHEDULE.Instrument, today, START_DATES.Instrument);
+  renderCard("card-commercial", "Commercial 4-6 PM", SCHEDULE.Commercial, today, START_DATES.Commercial);
+  renderCard("card-written", "Written Test Prep", SCHEDULE.Written, today, START_DATES.Written);
 }
 
 render();
-
-// expose functions for inline onclick
-window.openAnchorDialog = openAnchorDialog;
-window.closeAnchorDialog = closeAnchorDialog;
-window.applyAnchorFromDialog = applyAnchorFromDialog;
 </script>
-
-<!-- Anchor dialog -->
-<dialog id="anchorDialog" class="rounded-2xl p-0"
-  style="background: rgba(17,24,39,.96); border: 1px solid rgba(255,255,255,.10); color: white; max-width: 760px; width: calc(100% - 24px);">
-  <form method="dialog" class="p-5 sm:p-6">
-    <div class="flex items-start justify-between gap-3">
-      <div>
-        <div id="anchorTitle" class="text-lg font-extrabold text-sim-yellow">Set Anchor</div>
-        <div class="mt-1 text-sm" style="color: rgba(255,255,255,.70);">
-          Pick the lesson and the date it was taught. We’ll calculate the correct Topic 1 date automatically.
-        </div>
-      </div>
-      <button type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-sm font-semibold" onclick="closeAnchorDialog()">Close</button>
-    </div>
-
-    <div class="mt-4 grid gap-3 sm:grid-cols-2">
-      <div>
-        <label class="block text-sm font-semibold mb-1" style="color: rgba(255,255,255,.75);">Lesson that was taught</label>
-        <select id="anchorLesson"
-          class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-gray-100"></select>
-      </div>
-
-      <div>
-        <label class="block text-sm font-semibold mb-1" style="color: rgba(255,255,255,.75);">Date it was taught</label>
-        <input id="anchorTaughtDate" type="date"
-          class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-gray-100" />
-      </div>
-    </div>
-
-    <div id="anchorMsg" class="mt-2 text-xs"></div>
-
-    <div class="mt-5 flex items-center justify-end gap-2">
-      <button type="button" class="btn-ghost px-3 py-2 rounded-lg text-sm font-semibold" onclick="closeAnchorDialog()">Cancel</button>
-      <button type="button"
-        class="btn-ghost px-3 py-2 rounded-lg text-sm font-semibold"
-        style="border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.06);"
-        onclick="applyAnchorFromDialog()">
-        Save anchor
-      </button>
-    </div>
-  </form>
-</dialog>
 
 </body>
 </html>
