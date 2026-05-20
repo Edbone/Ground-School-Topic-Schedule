@@ -194,7 +194,7 @@
     }
 
     @keyframes c172Travel {
-      from { transform: translateX(0); }
+      from { transform: translateX(120%); }
       to { transform: translateX(calc(-100vw - 120%)); }
     }
 
@@ -567,7 +567,45 @@ function render() {
   renderCard("card-written", "Knowledge Test Prep 10-12 PM", SCHEDULE.Written, today, START_DATES.Written);
 }
 
+function initAnimationSync() {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setUTCHours(0, 0, 0, 0);
+  const elapsedMs = now.getTime() - midnight.getTime();
+
+  const skyWash = document.querySelector('.sky-wash');
+  if (skyWash) {
+    const skyOffset = (elapsedMs % 5000) / 5000 * -5;
+    skyWash.style.animationDelay = `${skyOffset}s`;
+  }
+
+  const trails = document.querySelectorAll('.flight-trail');
+  trails.forEach((trail) => {
+    const trailDuration = 7000;
+    const offset = (elapsedMs % trailDuration) / trailDuration * -7;
+    trail.style.animationDelay = `${offset}s`;
+  });
+
+  const c172 = document.querySelector('.c172-flyby');
+  if (c172) {
+    const c172Duration = 8000;
+    const planeOffset = (elapsedMs % c172Duration) / c172Duration * -8;
+    c172.style.animationDelay = `${planeOffset}s`;
+
+    const planeImg = document.querySelector('.c172-plane');
+    if (planeImg) {
+      const bobDuration = 2800;
+      const bobOffset = (elapsedMs % bobDuration) / bobDuration * -2.8;
+      planeImg.style.animationDelay = `${bobOffset}s`;
+    }
+  }
+
+  console.log(`Animation sync initialized at ${elapsedMs}ms from midnight UTC`);
+}
+
 render();
+initAnimationSync();
+setInterval(initAnimationSync, 30000);
 </script>
 
 </body>
